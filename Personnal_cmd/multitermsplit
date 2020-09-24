@@ -1,0 +1,7 @@
+
+#!/bin/bash
+xdotool key "ctrl+alt+t"
+sleep 1
+xdotool key "ctrl+j"
+xdotool key "ctrl+k"
+xdotool key "ctrl+k"
