@@ -1,0 +1,54 @@
+#!/bin/bash
+
+
+FILE=~/.htbvpn/config
+
+if [ ! -f ~/.htbvpn/config ] && [ ! "$1" == "--init" ]; then
+  echo -e "[\e[31mX\e[0m] htbvpn not already initialise"
+fi
+if  [ -f ~/.htbvpn/config ]; then
+  username=$(cat ~/.htbvpn/config)
+fi
+if [ "$1" == "--init" ]; then
+  if [ -f "$FILE" ]; then
+      echo -e "[\e[31mX\e[0m] htbvpn is already initialise"
+      echo -e "Use rm -rf ~/.htbvpn/ to remvove config"
+      exit 0
+  else
+    mkdir ~/.htbvpn/
+    mkdir ~/.htbvpn/vpn_file
+    touch ~/.htbvpn/config
+    echo "HTB Username :"&&read username
+    echo "Full path of openvpn  (like : /home/username/vpn/) :"&&read path
+    echo $username >> ~/.htbvpn/config
+    echo -e "[\e[32m✓\e[0m] htbvpn is initialise"
+    if [ "$path" == "" ]; then
+      echo -e "[\e[31m!\e[0m]Move all openvpn file config file into ~/.htbvpn/vpn/ or choose a path during initialisation !"
+      exit 0
+    else
+      cp $path*_$username.ovpn ~/.htbvpn/vpn_file/
+      exit 0
+    fi
+  fi
+elif [ "$1" == "-m" ]; then
+        sudo openvpn ~/.htbvpn/vpn_file/lab_$username.ovpn && echo -e "[\e[33m!\e[0m] Disconnected from machines"
+        exit 0
+elif [ "$1" == "-s" ]; then
+        sudo openvpn ~/.htbvpn/vpn_file/starting_point_$username.ovpn && echo -e "[\e[33m!\e[0m] Disconnected from starting point !"
+        exit 0
+elif [ "$1" == "-e" ]; then
+        sudo openvpn ~/.htbvpn/vpn_file/endgames_$username.ovpn && echo -e "[\e[33m!\e[0m] Disconnected from endgames !"
+        exit 0
+elif [ "$1" == "-f" ]; then
+        sudo openvpn ~/.htbvpn/vpn_file/fortresses_$username.ovpn && echo -e "[\e[33m!\e[0m] Disconnected fromn forteress !"
+        exit 0
+elif [ "$1" == "-h" ]; then
+        echo "-m : Connect to machines"
+	      echo "-s : Connect to starting points"
+	      echo "-e : Connect to endgames"
+	      echo "-f : Connect to forteress"
+        exit 0
+else
+        echo "Invalid arguement  !"
+        exit 1
+fi
